@@ -1,29 +1,27 @@
 def stock_picker(stock_prices)
-  current_price = stock_prices[0]
-  price_rate = []
-  stock_prices.each_cons(2) do |element|
-    price_rate << element[1] - element[0]
-  end
-  p price_rate
-  interest = 0
-  max_interest = 0
-  i_start = 0
-  res = []
-  price_rate.each_with_index do |rate, i|
-    if rate >= 0
-      i_start = i if interest.zero?
-      interest += rate
-    else
-      if interest > max_interest
-        res += [i_start, i]
-        max_interest = interest
-      end
-      interest = 0
+  prices = [] # array for pairs of the best prices [[min,max],[,],[,]]
+  stock_clone = stock_prices.clone
+  loop do
+    stock_tmp = stock_clone.clone
+    min_price = stock_tmp.min
+    max_price = min_price
+    best_buy = best_sell = 0
+    loop do # find interest for the the min_price
+      best_buy = stock_tmp.index(min_price)
+      max_price = stock_tmp.max
+      best_sell = stock_tmp.index(max_price)
 
+      break if best_buy < best_sell # best buy-sell is found
+
+      stock_tmp.delete(max_price) # remove max_price placed before min_price
+      break if stock_tmp.length == 1
     end
+    prices << [min_price, max_price] if best_buy < best_sell
+    stock_clone.delete(min_price) # remove min_price to find next min_price
+    next unless stock_clone.length == 1
+    return nil if prices.empty?
+
+    prices.sort_by! { |el| el[1] - el[0] }
+    return [stock_prices.index(prices.last[0]), stock_prices.index(prices.last[1])]
   end
-
-  res = [i_start, stock_prices.length - 1] if interest > max_interest
-
-  res
 end
