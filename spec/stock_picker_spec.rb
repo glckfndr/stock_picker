@@ -1,5 +1,5 @@
 require 'spec_helper'
-require_relative '../lib/spec_picker'
+require_relative '../lib/stock_picker'
 
 describe 'spec_picker method for stock prices' do
   describe 'calculates a pair of days representing the best day to buy and the best day to sell' do
